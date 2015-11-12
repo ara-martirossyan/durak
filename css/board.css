@@ -1,0 +1,64 @@
+#pc-hand {
+   border-color: #808080 #000000 #000000 #808080;
+   border-width: 1px;
+   border-style: solid;
+   width:  60em;
+   height: 9em;
+   border-radius: .3em;
+   left: 15em;
+   top: 3em;
+   position: absolute;
+   margin: 0.5em
+}
+
+#deck {
+   border-color: black;
+   border-width: 1px;
+   border-style: solid;
+   width:  7em;
+   height: 9em;
+   border-radius: .3em;
+   left: 2em;
+   top: 18em;
+   position: absolute;
+   margin: 0.5em
+}
+
+#my-hand {
+   border-color: #808080 #000000 #000000 #808080;
+   border-width: 1px;
+   border-style: solid;
+   width:  60em;
+   height: 9em;
+   border-radius: .3em;
+   left: 15em;
+   top: 33em;
+   position: absolute;
+   margin: 0.5em
+}
+
+#table {
+   border-color: #808080 #000000 #000000 #808080;
+   border-width: 1px;
+   border-style: solid;
+   width:  60em;
+   height: 11em;
+   border-radius: .3em;
+   left: 15em;
+   top: 17em;
+   position: absolute;
+   margin: 0.5em
+}
+
+#message{
+   position: absolute;
+   left: 7.8em;
+   top: 14.5em;
+}
+
+
+
+
+
+
+

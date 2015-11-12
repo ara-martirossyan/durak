@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" type="text/css" href="css/card.css">
+	<link rel="stylesheet" type="text/css" href="css/board.css">
+	<title></title>
+</head>
+<body>
+   <button onclick="deckInit();">create 36-card deck</button>
+   <button onclick='shuffleDeck();'>shuffle deck</button>
+   <button onclick='startGame();'>Start Game</button>
+   <button onclick='myTurn();' >my turn</button>
+   <button onclick='acceptCardsToMyHand(1000);' >my accept</button>
+   <br>
+   <input style="width:3em" type="number" id="my" min="1" max="36" value="1">
+   <button onclick='toBeDeletedUselessFunction("my");' >draw cards to your hand</button>
+   <br>
+   <input style="width:3em" type="number" id="pc" min="1" max="36" value="1">
+   <button onclick='toBeDeletedUselessFunction("pc");' >draw to opponents hand</button>
+   <br>
+   <form>
+    <input type="radio" name="suit" value="spades" checked> Spades
+    <br>
+    <input type="radio" name="suit" value="hearts"> Hearts
+    <br>
+    <input type="radio" name="suit" value="diamonds"> Diamonds
+    <br>
+    <input type="radio" name="suit" value="clubs"> Clubs
+   </form> 
+
+   <h1 id = "message">Press create deck, shuffle, and start the game!</h1>
+   <div id = "table"></div>
+   <div id = "deck"></div>
+   <div id = "pc-hand"></div>
+   <div id = "my-hand"></div>
+   
+
+
+
+<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/card.js"></script>
+<script type="text/javascript" src="js/cardNode.js"></script>
+<script type="text/javascript" src="js/stack.js"></script>
+<script type="text/javascript" src="js/table.js"></script>
+<script type="text/javascript" src="js/acceptCards.js"></script>
+<script type="text/javascript" src="js/helpers.js"></script>
+</body>
+</html>
+
