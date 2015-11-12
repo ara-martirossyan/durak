@@ -7,18 +7,24 @@
 	<title></title>
 </head>
 <body>
+
    <button onclick="deckInit();">create 36-card deck</button>
    <button onclick='shuffleDeck();'>shuffle deck</button>
    <button onclick='startGame();'>Start Game</button>
    <button onclick='myTurn();' >my turn</button>
    <button onclick='acceptCardsToMyHand(1000);' >my accept</button>
+   <button onclick='acceptCardsToPcHand(1000);' >pc accept</button>
+   <button onclick='pcAttackLowestCard(1000);' >pc turn</button>
+
    <br>
+
    <input style="width:3em" type="number" id="my" min="1" max="36" value="1">
    <button onclick='toBeDeletedUselessFunction("my");' >draw cards to your hand</button>
    <br>
    <input style="width:3em" type="number" id="pc" min="1" max="36" value="1">
    <button onclick='toBeDeletedUselessFunction("pc");' >draw to opponents hand</button>
    <br>
+
    <form>
     <input type="radio" name="suit" value="spades" checked> Spades
     <br>
