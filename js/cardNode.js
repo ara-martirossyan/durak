@@ -1,6 +1,6 @@
-//reurns Object (HTMLCollection) of div.card in <div id = "divIDName"></div>
+//returns jquery Object collection of of div.card in <div id = "divIDName"></div>
 var grabCards = function(divIDName){ 
-	//return document.getElementById(divIDName).getElementsByClassName("card"); 
+	//return document.getElementById(divIDName).getElementsByClassName("card"); //Object (HTMLCollection)//
 	return $("#" + divIDName + " .card");
 }
 

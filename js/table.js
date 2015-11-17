@@ -1,38 +1,4 @@
-//the number of cards that 
-//the table container can hold 
-//without having card-pairs overlapped
-var tableCapacity = function(){
-	return 16;//8 pairs
-}
 
-
-var pairOffSetX = function(){
-	return 0.5;
-}
-
-var pairOffSetY = function(){
-	return 1.5;
-}
-
-var pairWidth = function(){
-    return cardWidth() + pairOffSetX();
-}
-
-var tableScale = function(n){
- if (n <= tableCapacity() ){ 
- 	return pairWidth() 
- } else{
- 	return pairWidth()*(tableCapacity() - 1)/(n - 1);
- };
-}
-
-var tableTopFromPcHand = function(){
-	return 8.4;
-}
-
-var tableTopFromMyHand = function(){
-	return -9.6;
-}
 
 // returns the [left,top] coordinates 
 // of the i'th card in ems
@@ -54,8 +20,8 @@ var coord = function(n,i){
 var makeSpaceOnTable = function(){
 	var number = grabCards("table").length;	
 	if(number >= tableCapacity() ){// && number%2 === 0
-		var table = [].map.call(grabCards("table"), function(e){return e});
-		grabCards("table").each(function(idx,card){	
+		var table = getArray("table");
+		table.forEach(function(card){	
 			$(card).animate(
 				{ 
 				  left: coord(number+1,table.indexOf(card))[0]+"em", 
@@ -73,8 +39,8 @@ var makeSpaceOnTable = function(){
 //returns the hand name of the cardNode as a string("pc-hand", "my-hand" )
 //if there is no cardNode in any of hands it throws an error 
 var handOfCard = function(cardNode){
-	var idxPC = [].map.call(grabCards("pc-hand"),function(e){return e}).indexOf(cardNode);
-	var idxMY = [].map.call(grabCards("my-hand"),function(e){return e}).indexOf(cardNode);
+	var idxPC = getArray("pc-hand").indexOf(cardNode);
+	var idxMY = getArray("my-hand").indexOf(cardNode);
 	if(idxPC > -1 ){
 		return "pc-hand";
 	}else if(idxMY > -1){
@@ -88,7 +54,7 @@ var handOfCard = function(cardNode){
 //after removing cardNode from hand (when playing cardNode)
 var squeezHandAfterTurn = function(cardNode,time){
 	var handName  =  handOfCard(cardNode);
-	var handArray = [].map.call( grabCards(handName), function(e){return e});
+	var handArray = getArray(handName);
 	var index = handArray.indexOf(cardNode);
 	handArray.splice(index,1);
 	var scale = handScale(handArray);
@@ -129,8 +95,10 @@ var moveAndAttacheToTable = function(cardNode,x,y,time){
 
 var playMove = function(cardNode,time){
 	makeSpaceOnTable();
-	var number = grabCards("table").length + 1;
-	moveAndAttacheToTable(cardNode,coord(number,number-1)[0],coord(number,number-1)[1],time)
+	var number = grabCards("table").length;
+	var x = coord(number + 1, number)[0];
+	var y = coord(number + 1, number)[1];
+	moveAndAttacheToTable(cardNode,x,y,time)
 }
 
 //returns true if cardNode is a valid card to attack
@@ -139,7 +107,7 @@ var isValidCardToAttack = function(cardNode){
    if( grabCards("table").length === 0 ){
    	return true;
    }
-   var tableRanks = [].map.call( grabCards("table") , function(e){return rank(e)} )
+   var tableRanks = getArray("table");
    if(tableRanks.indexOf( rank(cardNode) ) > -1){
    	return true;
    }else{
@@ -166,18 +134,20 @@ var isValidCardToDefend = function(cardNode){
 
 //returns an array of valid cards in the hand to attack 
 var getValidCardsToAttack = function(handDivIdName){
-	var hand = [].map.call( grabCards(handDivIdName), function(e){return e});
+	var hand = getArray(handDivIdName);
 	var valid = hand.filter(function(card){
 		return isValidCardToAttack(card);
 	})
+	return valid;
 }
 
 //returns an array of valid cards in the hand to defend
 var getValidCardsToDefend = function(handDivIdName){
-	var hand = [].map.call( grabCards(handDivIdName), function(e){return e});
+	var hand = getArray(handDivIdName);
 	var valid = hand.filter(function(card){
 		return isValidCardToDefend(card);
 	})
+	return valid;
 }
 
 

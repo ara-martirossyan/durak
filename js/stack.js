@@ -1,48 +1,3 @@
-// constant "em" scale at which
-// the cards are separated from each other
-// to give a feeling of width for the deck
-var deckScale = function(){
-	return 0.01;
-}
-
-//minimium number of cards allowed 
-//in the hand of the game DURAK 
-var minHandLength = function(){
-	return 6;
-}
-
-//the number of cards that 
-//the hand container can hold 
-//without having cards overlapped
-var capacityN = function(){
-	return 9;
-};
-//the width of single card in "em"s	
-var cardWidth = function(){
-	return 4;
-};
-
-var deckLeftFromPcHand = function(){
-	return -7.8;
-}
-
-var deckTopFromPcHand = function(){
-	return 9;
-}
-
-var deckLeftFromMyHand = function(){
-	return -7.8;
-}
-
-var deckTopFromMyHand = function(){
-	return -9;
-}
-
-//returns the top em value when card in my-hand selected
-var popUp = function(){
-	return -1;
-}
-
 //Creates the deck in a sorted order like
 //(6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,
 //10,10,10,10,J,J,J,J,D,D,D,D,K,K,K,K,A,A,A,A)
@@ -102,30 +57,7 @@ var topCardOfStack = function(divIDName){
 	}		
 }
 
-///////////////////////////////////////////////
-// SCALE DEFINITION FOR THE HAND             //
-///////////////////////////////////////////////
-// cardWidth --> the width of single card
-// capacityN --> the number of cards that 
-//               the container can hold 
-//               without having cards overlapped
 
-// containerLength = capacityN * cardWidth
-
-// the configuration of cards in the container
-// must be such that if the number of cards
-// in the container is less or equal to capacityN
-// then the distance-scale at wich the cards are 
-// separated from each other is cardWidth
-// otherwise the scale is 
-
-// (containerLength - cardWidth)/(handLength-1)
-
-// if(handLength <= capacityN){
-// 	scale = cardWidth;
-// }else{
-// 	scale = cardWidth*(capacityN - 1)/(handLength-1)
-// }
 /*
 *  picks up the hand ("removes the cardNodes and returns as an array of cardNodes") 
 *  from the board <div id = "divHandIDName"></div> ,
@@ -204,7 +136,7 @@ var sortCardArray = function(trumpSuit, arr){
 //so that the highest cardNodes come first in the mentioned div stack
 var sortCardNodesOrder = function(trumpSuit, cardsDivIdName){
 		//convert grabbed cards to usual javascript array []
-	    var arr = [].map.call( grabCards(cardsDivIdName), function(e){return e});
+	    var arr = getArray(cardsDivIdName);
 
        	var	arrSorted = sortCardArray(trumpSuit, arr);	    
 
@@ -255,15 +187,7 @@ function moveCards (numberOfCards, handDivIdName,  prepared) {
    }, 1000)
 };
 
-//the distance-scale at wich the cards are 
-// separated from each other in the hand
-var handScale = function(arrayOfCards){
-	if(arrayOfCards.length <= capacityN()){
-		return cardWidth();
-	}else{
-		return cardWidth()*(capacityN() - 1)/(arrayOfCards.length - 1);
-	}
-}
+
 
 //time
 var moveFromDeckTo = function(handDivIdName,  prepared){
@@ -288,7 +212,7 @@ var moveFromDeckTo = function(handDivIdName,  prepared){
 
 var insert = function(cardNode, prepared, srcDivIdName, handDivIdName){
 	var indexOfCardNode = prepared.indexOf(cardNode)
-	var source = [].map.call( grabCards(srcDivIdName) , function(e){return e});
+	var source = getArray(srcDivIdName);
 	for (var i = indexOfCardNode; i >= 0; i--) {
 		if(source.indexOf(prepared[i]) === -1){
 			$(cardNode).insertAfter( $(prepared[i]) )
@@ -311,13 +235,13 @@ var prepare = function(number,sourceDivIdName,targetDivIdName,trumpSuit,time){
    	    var cardsToBeAdded = grabCards(sourceDivIdName).slice(srcCardNum-number);
    		var target  = grabCards(targetDivIdName).add( cardsToBeAdded );
    		//convert target to usual javascript array []
-   		var target = [].map.call( target, function(e){return e});
+   		var target = castToArray(target);
    		var targetSorted = sortCardArray(trumpSuit, target);
    		var scale = handScale(targetSorted);
 
         sortCardNodesOrder(trumpSuit, targetDivIdName);
 
-	    grabCards(targetDivIdName).each(function(idx,card){	
+	    getArray(targetDivIdName).forEach(function(card){	
 	    	$(card).animate(
 	    		{left: targetSorted.indexOf(card)*scale+"em", top: 0+"em"},
 	    		{
@@ -347,7 +271,8 @@ var toBeDeletedUselessFunction = function(handInputId){
 //time = 900
 var initDealMove = function(){
 
-	var cardsArr = [].map.call( grabCards("deck").slice(36-12), function(e){return e})
+	//var cardsArr = castToArray( grabCards("deck").slice(36-12) );
+	var cardsArr = getArray("deck").slice(36-12) ;
 	var pc = cardsArr.filter(function(e){ return cardsArr.indexOf(e)%2 === 0});
 	var my = cardsArr.filter(function(e){ return cardsArr.indexOf(e)%2 === 1});
 
@@ -421,7 +346,7 @@ var insertTopCardIntoBottomOfDeckByRotatingAndThenSortMyHand = function(rotTime,
 var lowestTrumpCard = function(divHandIDName){
 	var sortedArrayOfTrumpCards = sortCardArray(
 		trump(),
-		[].map.call( grabCards(divHandIDName), function(e){return e}).filter(function(card){
+		getArray(divHandIDName).filter(function(card){
 		   return suit(card) === trump();
 	    })
 	);
@@ -461,8 +386,7 @@ var showLowestTrumpCard = function(cardNode, showTime){
 //and when clicked move the card onto the table
 // and at last disable the selectable mode
 var myTurn = function(){
-	[].map.call(grabCards("my-hand"), function(e){return e})
-	.forEach(function(elem){
+	getArray("my-hand").forEach(function(elem){
 		$(elem).mouseover(function(){
 			$(this).css({'top': popUp()+'em'});
 		});
@@ -478,8 +402,7 @@ var myTurn = function(){
 }
 
 var disableTurn = function(){
-	[].map.call(grabCards("my-hand"), function(e){return e})
-	.forEach(function(elem){
+	getArray("my-hand").forEach(function(elem){
 		$(elem).unbind('mouseover mouseout click');
 	})
 }

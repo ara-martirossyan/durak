@@ -2,7 +2,7 @@
 * accept cards on table into "my-hand"
 */
 var acceptCardsToMyHand = function(time){	
- 	var table = [].map.call(grabCards("table"), function(e){return e})
+ 	var table = getArray("table");
   	var prepared = prepare(table.length, "table", "my-hand", trump(), time/2)
 	var scale = handScale(prepared);
 	setTimeout(function(){
@@ -31,7 +31,7 @@ var acceptCardsToMyHand = function(time){
 */
 var pcHandMakeSpaceToAccept = function(time){
 	var target = grabCards("pc-hand").add( grabCards("table") );
-	target  = [].map.call( target,  function(e){return e}  )
+	target  = castToArray(target);
 	var scale = handScale(target);
 	grabCards("pc-hand").each(function(idx,card){	
 		$(card).animate(
@@ -49,7 +49,7 @@ var pcHandMakeSpaceToAccept = function(time){
 * accept cards on table into "my-hand"
 */
 var acceptCardsToPcHand = function(time){
-	var table = [].map.call(grabCards("table"), function(e){return e})
+	var table = getArray("table");
 	var target = pcHandMakeSpaceToAccept(time);
 	var scale = handScale(target);
 	setTimeout(function(){
