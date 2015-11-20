@@ -1,5 +1,3 @@
-
-
 // returns the [left,top] coordinates 
 // of the i'th card in ems
 // in the table container
@@ -17,15 +15,16 @@ var coord = function(n,i){
 }
 
 //time
+
 var makeSpaceOnTable = function(){
 	var number = grabCards("table").length;	
-	if(number >= tableCapacity() ){// && number%2 === 0
+	if(number >= tableCapacity()  && number%2 === 0){
 		var table = getArray("table");
 		table.forEach(function(card){	
 			$(card).animate(
 				{ 
-				  left: coord(number+1,table.indexOf(card))[0]+"em", 
-				   top: coord(number+1,table.indexOf(card))[1]+"em"
+				  left: coord(number+2,table.indexOf(card))[0]+"em", 
+				  top: coord(number+2,table.indexOf(card))[1]+"em"
 				},
 				{
 					duration: 600,
@@ -35,6 +34,7 @@ var makeSpaceOnTable = function(){
 		})
 	}
 }
+
 
 //returns the hand name of the cardNode as a string("pc-hand", "my-hand" )
 //if there is no cardNode in any of hands it throws an error 
@@ -96,9 +96,60 @@ var moveAndAttacheToTable = function(cardNode,x,y,time){
 var playMove = function(cardNode,time){
 	makeSpaceOnTable();
 	var number = grabCards("table").length;
-	var x = coord(number + 1, number)[0];
-	var y = coord(number + 1, number)[1];
+	var x,y;
+	if(number >= tableCapacity()  && number%2 === 0){
+		 x = coord(number + 2, number)[0];
+		 y = coord(number + 2, number)[1];
+	}else{
+		 x = coord(number + 1, number)[0];
+		 y = coord(number + 1, number)[1];
+	}
+
 	moveAndAttacheToTable(cardNode,x,y,time)
+}
+
+var makeSpaceOnTableWhenAdding = function(){
+	var table = getArray("table");
+	var attackC = table.filter(function(card){
+		return card.style.top === "0em";
+	})
+	var defendC = table.filter(function(card){
+		return card.style.top === pairOffSetY() + "em";
+	})
+	var number = attackC.length;
+	if(number >= tableCapacity()/2){
+
+		table.forEach(function(card){
+			var idx;
+			if(attackC.indexOf(card)>-1){
+				idx = 2*attackC.indexOf(card);
+			}else{
+				idx = 2*defendC.indexOf(card)+1
+			}
+			$(card).animate(
+					{ 
+						left: coord(2*number+1, idx)[0]+"em", 
+					},
+					{
+						duration: 600,
+						queue: false,
+					}
+			);
+		})
+	}
+}
+
+var addToCollect = function(cardNode,time){
+   
+   makeSpaceOnTableWhenAdding();
+   var table = getArray("table");
+   var number = table.filter(function(card){
+   	return card.style.top === "0em";
+   }).length
+   var x,y;
+   x = coord(2*number+1, 2*number)[0];
+   y = coord(2*number+1, 2*number)[1];
+   moveAndAttacheToTable(cardNode,x,y,time)
 }
 
 //returns true if cardNode is a valid card to attack

@@ -23,3 +23,10 @@ var pcAttackLowestCard = function(time){
 	var cardNode = hand[hand.length - 1];
     playMove(cardNode, time);
 }
+
+var pcAddLowestCard = function(time){
+	var arr = getArray("pc-hand");
+	var hand = sortCardArray(trump(), arr);
+	var cardNode = hand[hand.length - 1];
+    addToCollect(cardNode, time);
+}
