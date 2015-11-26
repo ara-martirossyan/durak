@@ -58,95 +58,44 @@ var topCardOfStack = function(divIDName){
 }
 
 
-/*
-*  picks up the hand ("removes the cardNodes and returns as an array of cardNodes") 
-*  from the board <div id = "divHandIDName"></div> ,
-*  draws numberOfCards from the stack(fromDivIDName) and adds them onto the picked up hand,
-*  defines the scale according to the hand.length like described above
-*  and puts the hand back into its place
-*/
-var drawCardsToHand = function(numberOfCards, fromDivIDName, divHandIDName){    
-	var scale;
-	//pick up the existing hand
-	var hand = pickStack(divHandIDName);
 
-    //add cards from the top of stack "fromDivIDName" onto the picked up hand
-	for (var i = 0; i < numberOfCards && topCardOfStack(fromDivIDName) !== null; i++) {
-		var topCard = pickUp(topCardOfStack(fromDivIDName));
-		hand.push(topCard);
-	};
-	//define the scale at which the hand cards will be set down on board
-	if(hand.length <= capacityN()){
-		scale = cardWidth();
-	}else{
-		scale = cardWidth()*(capacityN() - 1)/(hand.length - 1);
-	}
-	//put down hand 
-	for (var i = 0; i < hand.length; i++) {
-		putDown(hand[i], divHandIDName, i*scale, 0, "up");
-	};
-}
 
 // deal the hand <div id = "divHandIDName"></div>
 // from the deck
 var dealHand = function(divHandIDName){
+	if(divHandIDName !== "pc-hand" && divHandIDName !== "my-hand"){
+		throw "dealHand: " + divHandIDName + " does not match neither with pc-hand nor with my-hand";
+	}
 	var handLength = grabCards(divHandIDName).length;
+	var prepared;
 	if(handLength < minHandLength()){
 		var numberOfCards = minHandLength() - handLength;
-		drawCardsToHand(numberOfCards, "deck", divHandIDName);
+		var deckLength = grabCards("deck").length;
+		if(numberOfCards >= deckLength){
+			numberOfCards = deckLength;
+		}
+		if(divHandIDName === "pc-hand"){
+			moveCards(numberOfCards, divHandIDName,  pcHandMakeSpaceToAccept(600, numberOfCards) ); 
+		}else{
+			prepared = prepare(numberOfCards, "deck", "my-hand", trump(), 600)	
+			moveCards(numberOfCards, divHandIDName,  prepared);		
+		}
 	}
 }
 
-var isCardArraySorted = function(trumpSuit, arr){	
-	return arr.every(function(card){
-	   var i = arr.indexOf(card);
-	   if(i === 0){
-	   	return true;
-	   }else{
-	   	return highestCard(trumpSuit, arr[i-1], card) === arr[i-1] ||
-	   	       highestCard(trumpSuit, arr[i-1], card).length === 2;
-	   }
-	})
+var dealHandsStartingFrom = function(divHandIDName){
+  var time = dealHandTime(divHandIDName);
+  var nextHand;
+  if(divHandIDName === "pc-hand"){
+  	nextHand = "my-hand"
+  }else{
+  	nextHand = "pc-hand"
+  }
+  dealHand(divHandIDName);
+  setTimeout(function(){
+  	dealHand(nextHand);
+  },time)
 }
-
-// returns sorted array so that the highest card is on the left
-// and the lowest card is on the right
-// if array is sorted already it returns the array without sorting it
-var sortCardArray = function(trumpSuit, arr){
-	if( isCardArraySorted(trumpSuit, arr) ){return arr;}
-
-	if(arr.length <= 1){return arr;}
-
-	//var pivotIndex = Math.round(Math.random()*(arr.length - 1));
-	var pivot = arr[0];
-
-	var right = arr.filter(function(card){
-		return highestCard(trumpSuit, pivot, card) === pivot;   
-	})
-	var left = arr.filter(function(card){
-		return highestCard(trumpSuit, pivot, card) !== pivot && card !== pivot;   
-	})
-
-	left = sortCardArray(trumpSuit,left);
-	right = sortCardArray(trumpSuit,right);
-	return left.concat([pivot],right);
-}
-
-//reorders cardNodes in the parent <div id = "cardsDivIdName"></div>
-//so that the highest cardNodes come first in the mentioned div stack
-var sortCardNodesOrder = function(trumpSuit, cardsDivIdName){
-		//convert grabbed cards to usual javascript array []
-	    var arr = getArray(cardsDivIdName);
-
-       	var	arrSorted = sortCardArray(trumpSuit, arr);	    
-
-        $(arrSorted[0]).prependTo("#"+cardsDivIdName);
-
-        for (var i = 1; i < arrSorted.length; i++) {
-        	$(arrSorted[i]).insertAfter($(arrSorted[i-1]))
-        };
-}
-
 
 
 
@@ -192,6 +141,11 @@ function moveCards (numberOfCards, handDivIdName,  prepared) {
 //time
 var moveFromDeckTo = function(handDivIdName,  prepared){
 	var deckTopCard = topCardOfStack("deck");
+	//take care of the bottom trump card
+	if(grabCards("deck").length === 1){
+		grabCards("deck").unwrap().appendTo("#deck").css({left: "0em", top: "0em" }).dequeue();
+	}
+
 	// off is the relative distance of the top card in the deck from deck div in em's
 	var off = Number( deckTopCard.style.left.replace(/[^0-9,.,-]/g, '') );
 	// deckTop and deckLeft are the relative distances of the deck from handDivIdName in em's
@@ -200,11 +154,15 @@ var moveFromDeckTo = function(handDivIdName,  prepared){
     var scale = handScale(prepared);
     var idx = prepared.indexOf(deckTopCard);
 	var card = insert(deckTopCard, prepared, "deck", handDivIdName)
-	.css({top: deckTop + off + 'em', left: deckLeft + off + 'em'})
-	
-	if(handDivIdName === "my-hand"){
+	.css({top: deckTop + off + 'em', left: deckLeft + off + 'em'})	
+
+	if(grabCards("deck").length === 0 && handDivIdName === "pc-hand"){
+		moveByFlip(card, idx*scale, 0, 900, false)
+	}else if(grabCards("deck").length === 0 && handDivIdName === "my-hand"){
+		card.animate({left: idx*scale+"em", top: 0+"em"},900,"swing")
+	}else if( handDivIdName === "my-hand" ){
 		moveByFlip(card, idx*scale, 0, 900, true)
-	}else if(handDivIdName === "pc-hand"){
+	}else if( handDivIdName === "pc-hand" ){
 		card.animate({left: idx*scale+"em", top: 0+"em"},900,"swing")
 	}
 	
@@ -230,28 +188,32 @@ var insert = function(cardNode, prepared, srcDivIdName, handDivIdName){
 //time = 600
 // prepares space in the targetDivIdName hand to add number of cards into the hand
 var prepare = function(number,sourceDivIdName,targetDivIdName,trumpSuit,time){
-   var srcCardNum = grabCards(sourceDivIdName).length
-   if(number <= srcCardNum){
-   	    var cardsToBeAdded = grabCards(sourceDivIdName).slice(srcCardNum-number);
-   		var target  = grabCards(targetDivIdName).add( cardsToBeAdded );
-   		//convert target to usual javascript array []
-   		var target = castToArray(target);
-   		var targetSorted = sortCardArray(trumpSuit, target);
-   		var scale = handScale(targetSorted);
+	var srcCardNum = grabCards(sourceDivIdName).length;
+	var cardsToBeAdded;
+	if(number <= srcCardNum){
+		cardsToBeAdded = grabCards(sourceDivIdName).slice(srcCardNum-number);
+	}else{
+   		//when number argument is bigger than the number of cards in sourceDivIdName
+   		cardsToBeAdded = grabCards(sourceDivIdName);
+   	}
+   	var target  = grabCards(targetDivIdName).add( cardsToBeAdded );
+   	//convert target to usual javascript array []
+   	var target = castToArray(target);
+   	var targetSorted = sortCardArray(trumpSuit, target);
+   	var scale = handScale(targetSorted);
 
-        sortCardNodesOrder(trumpSuit, targetDivIdName);
+   	sortCardNodesOrder(trumpSuit, targetDivIdName);
 
-	    getArray(targetDivIdName).forEach(function(card){	
-	    	$(card).animate(
-	    		{left: targetSorted.indexOf(card)*scale+"em", top: 0+"em"},
-	    		{
-	    			duration: time,
-	    			queue: false,
-	    		}
-	        );
-	    })
-	    return targetSorted;
-   }
+   	getArray(targetDivIdName).forEach(function(card){	
+   	    $(card).animate(
+   			{left: targetSorted.indexOf(card)*scale+"em", top: 0+"em"},
+   			{
+   				duration: time,
+   				queue: false,
+   			}
+   		);
+   	})
+   	return targetSorted;
 }
 
 
@@ -310,14 +272,32 @@ function firstDealOfBothHands(numberOfCards) {
    }, 100)// mi hat el 0 avelacra sarqi 1000!
 };
 
-//return trump suit
+//return trump suit name like "spades"
 var trump = function(){
-	return suit(document.getElementById("bottom").firstChild);
+	var suitChar = $("#trump").html();
+	return suitCharToString(suitChar)
 }
 
 
 var sortMyHand =  function(time){
 	prepare(0, "deck", "my-hand", trump(), time);
+}
+
+var createTrumpDiv = function(){
+	var trumpDiv = document.createElement("H1");
+	var subTrump = document.createElement("STRONG");
+	subTrump.id = "trump";
+	trumpDiv.left = "13em";
+	trumpDiv.top = "50em"
+	var cardNode = document.getElementById("bottom").firstChild;
+	var suitChar = card(cardNode)[1];
+	var suitName = suit(cardNode);
+	if(suitName === "diamonds" || suitName === "hearts"){
+		subTrump.className = "red"
+	}
+	$(subTrump).append(suitChar);
+	$(trumpDiv).append("Trump suit: " + $(subTrump).prop('outerHTML'));
+	$(trumpDiv).appendTo("body")	
 }
 
 //rotTime = 1000 sortTime = 600
@@ -338,6 +318,7 @@ var insertTopCardIntoBottomOfDeckByRotatingAndThenSortMyHand = function(rotTime,
 
 		}
 		,"linear").queue(function(){
+			createTrumpDiv();
 			sortMyHand(sortTime);
 		});
 	

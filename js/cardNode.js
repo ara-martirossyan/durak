@@ -40,10 +40,14 @@ var rank = function(cardNode){
 }
 
 // returns an entry string of the suits array like "diamonds" or "spades"
-var suit = function(cardNode){
-	var suit;
+var suit = function(cardNode){	
 	var suitChar = card(cardNode)[1];
-	switch (suitChar) {
+	return suitCharToString(suitChar);
+}
+
+var suitCharToString = function(suitChar){
+	var suit;
+		switch (suitChar) {
 		case "\u2663" :
 		suit = "clubs";
 		break;

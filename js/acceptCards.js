@@ -26,11 +26,23 @@ var acceptCardsToMyHand = function(time){
 
 /**
 * shift cards in pc hand to the right side
-* in order to accept cards from table 
+* in order to accept cards from table or deck
+* number argument is optional and if undefined
+* the hand is going to accept from table and if defined
+* the hand is going to accept number of cards from deck 
 * and returns the array that would be formed after accepting
 */
-var pcHandMakeSpaceToAccept = function(time){
-	var target = grabCards("pc-hand").add( grabCards("table") );
+var pcHandMakeSpaceToAccept = function(time, number){
+	var target;
+	if(number === undefined){
+	 target = grabCards("pc-hand").add( grabCards("table") );
+	}else if(grabCards("deck").length >= number){
+	 var deck = grabCards("deck");
+	 target = grabCards("pc-hand").add( deck.slice(deck.length-number) );
+	}else{
+		//when number argument is bigger than the number of cards in deck"
+		target = grabCards("pc-hand").add( grabCards("deck") );
+	}
 	target  = castToArray(target);
 	var scale = handScale(target);
 	grabCards("pc-hand").each(function(idx,card){	
