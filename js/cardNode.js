@@ -39,6 +39,34 @@ var rank = function(cardNode){
 	})[0]
 }
 
+// returns the rank in plural form  like "tens", "sixes" or "queens"
+var rankWithWordsInPlural = function(cardNode){
+	var r = rankWord(cardNode);
+	if(r === "six"){
+		return r + "es";
+    }else{
+    	return r + "s";
+    }
+}
+
+//returns the rank as a word like "ten" or "seven"
+var rankWord = function(cardNode){
+	var r = rank(cardNode);
+	if(r === "6"){
+		return "six"
+	}else if(r === "7"){
+		return "seven"
+	}else if(r === "8"){
+		return "eight"
+	}else if(r === "9"){
+		return "nine"
+	}else if(r === "10"){
+		return "ten"
+    }else{
+    	return r;
+    }
+}
+
 // returns an entry string of the suits array like "diamonds" or "spades"
 var suit = function(cardNode){	
 	var suitChar = card(cardNode)[1];

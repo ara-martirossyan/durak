@@ -362,32 +362,6 @@ var showLowestTrumpCard = function(cardNode, showTime){
 	},showTime);
 }
 
-//make my hand selectable
-// i.e. when hovered on the card pop up
-//and when clicked move the card onto the table
-// and at last disable the selectable mode
-var myTurn = function(){
-	getArray("my-hand").forEach(function(elem){
-		$(elem).mouseover(function(){
-			$(this).css({'top': popUp()+'em'});
-		});
-		$(elem).mouseout(function(){
-			$(this).css({'top': '0em'});
-		});
-		$(elem).click(function(){   
-		    var cardNode = $(this).get(0);
-		    playMove(cardNode,600);
-		    disableTurn();
-	    });
-	})
-}
-
-var disableTurn = function(){
-	getArray("my-hand").forEach(function(elem){
-		$(elem).unbind('mouseover mouseout click');
-	})
-}
-
 
 
 var firstTurn = function(){

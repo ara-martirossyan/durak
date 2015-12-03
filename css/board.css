@@ -67,9 +67,20 @@
 #message{
    position: absolute;
    left: 7.8em;
-   top: 14.5em;
+   top: 13.7em;
 }
 
+#btn1{
+   position: absolute;
+   top: 40.1em;
+   left: 94em;
+}
+
+#btn2{
+   position: absolute;
+   top: 42.1em;
+   left: 94em;
+}
 
 
 

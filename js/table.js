@@ -152,54 +152,7 @@ var addToCollect = function(cardNode,time){
    moveAndAttacheToTable(cardNode,x,y,time)
 }
 
-//returns true if cardNode is a valid card to attack
-//and false otherwise
-var isValidCardToAttack = function(cardNode){
-   if( grabCards("table").length === 0 ){
-   	return true;
-   }
-   var tableRanks = getArray("table");
-   if(tableRanks.indexOf( rank(cardNode) ) > -1){
-   	return true;
-   }else{
-   	return false;
-   }
-}
 
-//returns true if cardNode is a valid card to defend
-//and false otherwise
-var isValidCardToDefend = function(cardNode){
-   var attackingCard = topCardOfStack("table");
-   var trumpSuit = trump();
-   var ranksIndexOfCardNode = ranks.indexOf( rank(cardNode) );
-   var ranksIndexOfAttackingCard = ranks.indexOf( rank(attackingCard) );
-
-   if( suit(cardNode) === suit(attackingCard) && ranksIndexOfCardNode > ranksIndexOfAttackingCard ){
-   	 return true;
-   }else if( suit(attackingCard) !== trumpSuit && suit(cardNode) === trumpSuit ){
-   	 return true;
-   }else{
-   	 return false;
-   }
-}
-
-//returns an array of valid cards in the hand to attack 
-var getValidCardsToAttack = function(handDivIdName){
-	var hand = getArray(handDivIdName);
-	var valid = hand.filter(function(card){
-		return isValidCardToAttack(card);
-	})
-	return valid;
-}
-
-//returns an array of valid cards in the hand to defend
-var getValidCardsToDefend = function(handDivIdName){
-	var hand = getArray(handDivIdName);
-	var valid = hand.filter(function(card){
-		return isValidCardToDefend(card);
-	})
-	return valid;
-}
 
 
 

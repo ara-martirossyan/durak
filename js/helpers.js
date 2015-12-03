@@ -14,6 +14,18 @@ var showPcHand = function(){
 	})
 }
 
+//f.ex. context = document.body
+//btnTitle = "end attack"
+//btnStyle = "btn1" or "btn2"
+//func = function determining the functionality of button when clicked
+function createButton(context,btnTitle,btnStyle, func){
+    var button = document.createElement("button");
+    button.id = btnStyle;
+    button.onclick = func;
+    button.innerHTML = btnTitle;
+    context.appendChild(button)
+}
+
 //1000 is the time of card move. 600 is the sorting time and 100 extra time
 var dealHandTime = function(divHandIDName){
 	var deckLength = grabCards("deck").length;
