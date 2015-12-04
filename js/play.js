@@ -22,8 +22,8 @@ var myTurn = function(){
 			discard(1000);
 			disableTurn();
 		})
-	}else if(statusOfGame() === "defend"){
-			createButton( document.body , "accept cards", "btn1", function(){
+	}else if( statusOfGame() === "defend"){
+		createButton( document.body , "accept cards", "btn1", function(){
 			promptMessage("");
 			acceptCardsToMyHand(1000);
 			disableTurn();
@@ -37,6 +37,7 @@ var disableTurn = function(){
 	})
 
 	$("#btn1").remove();
+	$("#btn2").remove();
 }
 
 var statusOfGame = function(){
@@ -83,7 +84,7 @@ var isValidCardToDefend = function(cardNode){
 //returns an array of valid cards in the hand to attack 
 var getValidCardsToAttack = function(handDivIdName){
 	var hand = getArray(handDivIdName);
-	var valid = hand.filter(function(card){
+	var valid = sortCardArray(trump(), hand).filter(function(card){
 		return isValidCardToAttack(card);
 	})
 	return valid;
@@ -92,7 +93,7 @@ var getValidCardsToAttack = function(handDivIdName){
 //returns an array of valid cards in the hand to defend
 var getValidCardsToDefend = function(handDivIdName){
 	var hand = getArray(handDivIdName);
-	var valid = hand.filter(function(card){
+	var valid = sortCardArray(trump(), hand).filter(function(card){
 		return isValidCardToDefend(card);
 	})
 	return valid;
