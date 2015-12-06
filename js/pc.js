@@ -1,3 +1,4 @@
+
 var pcTurn = function(time){
 	var status = statusOfGame();
 	var attackingCards, defendingCards, cardNode;	
@@ -12,13 +13,28 @@ var pcTurn = function(time){
 	}else if(status === "attack"){//no valid cards to attack
 		discard(time);
 	}else if(status === "defend"){//no valid cards to defend
-		promptMessage( "I accept the cards. You can add additional cards" )
-		addCardsForPcToCollect(time);
+		pcCollect(time);
 	}
 }
 
 
-var addCardsForPcToCollect = function(time){
+var pcCollect = function(time){
+	var maxNumberOfAllowedCardsToAccept = grabCards("pc-hand").length - 1;
+	var checkNumber = grabCards("table").length + maxNumberOfAllowedCardsToAccept ;
+	if(grabCards("table").length < checkNumber){
+		promptMessage( "I accept the cards. You can add additional cards" )
+		addCardsForPcToCollect(checkNumber, time);
+	}else{
+		promptMessage("");
+		acceptCardsToPcHand(time);
+	}
+}
+
+// checkNumber is the max allowed # of cards on the table to be accepted 
+// into the pc-hand
+// checkNumber = grabCards("table").length + maxNumberOfAllowedCardsToAccept
+// defined at the time of declaration about collecting the cards
+var addCardsForPcToCollect = function(checkNumber, time){
 	createButton( document.body , "finish adding", "btn1", function(){
 			promptMessage("");
 			acceptCardsToPcHand(time);
@@ -34,21 +50,22 @@ var addCardsForPcToCollect = function(time){
 		});
 		$(elem).click(function(){   
 		    var cardNode = $(this).get(0);
-            validateCardAndAddForCollection(cardNode,time);
+            validateCardAndAddForCollection(checkNumber,cardNode,time);
 	    });
 	})
 }
 
-var validateCardAndAddForCollection = function(cardNode, time){
-	if( isValidCardToAttack(cardNode) ){
+var validateCardAndAddForCollection = function(checkNumber, cardNode, time){
+	if( isValidCardToAttack(cardNode) && grabCards("table").length < checkNumber  ){
 		promptMessage("");
 		disableTurn();
 		addToCollect(cardNode,time);
 		setTimeout(function(){
-			addCardsForPcToCollect(time);
+			addCardsForPcToCollect(checkNumber, time);
 		},time)
-	}else{
+	}else if( !isValidCardToAttack(cardNode) && grabCards("table").length < checkNumber){
 		promptMessage( "There are no " + rankWithWordsInPlural(cardNode) + " on the table, choose a valid card or finish adding");
+	}else if(grabCards("table").length >= checkNumber){
+		promptMessage( "There is no more place to accept, press finish adding");
 	}
 }
-
