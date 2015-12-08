@@ -126,14 +126,13 @@ var moveByFlip = function(cardNode,x,y,time, showOrHide){
 
 
 
-//time
+//time = 1000
 
 // a recoursive loop that moves numberOfCards from deck to handDivIdName
 function moveCards (numberOfCards, handDivIdName,  prepared) {          
-   setTimeout(function () {   
-      moveFromDeckTo(handDivIdName,  prepared)                        
-      if (--numberOfCards) moveCards(numberOfCards, handDivIdName,  prepared);      
-   }, 1000)
+   loop(numberOfCards, 1000, function(){
+   		moveFromDeckTo(handDivIdName,  prepared)
+   })
 };
 
 
@@ -264,12 +263,9 @@ var initDealMove = function(){
 
 //time
 function firstDealOfBothHands(numberOfCards) {          
-   setTimeout(function () {   
-      initDealMove();                        
-      if (--numberOfCards) {
-      	firstDealOfBothHands(numberOfCards);    
-      }
-   }, 100)// mi hat el 0 avelacra sarqi 1000!
+   loop(numberOfCards,100, function(){
+   	  initDealMove();
+   });// mi hat el 0 avelacra sarqi 1000!
 };
 
 //return trump suit name like "spades"

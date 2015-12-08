@@ -16,12 +16,47 @@ var myTurn = function(){
 		})
 	}else if( statusOfGame() === "defend"){
 		createButton( document.body , "accept cards", "btn1", function(){
-			promptMessage("");
-			acceptCardsToMyHand(1000);
-			disableTurn();
+			myCollect(1000, 600, 590);
 		})
 	}	
 }
+
+
+//this function is executed during myTurn when pressing on accept cards button
+//if there is more place in my-hand to accept and the pc has more cards to attack
+//it adds additional cards and makes a new button that allows to accept all together 
+//if there is no place or there are no cards to add the cards are accepted immediately
+var myCollect = function(acceptTime, loopFrequencyTime, addingTime){
+	var maxNumberOfAllowedCardsToAccept = grabCards("my-hand").length - 1;
+	var attackingCards = getValidCardsToAttack("pc-hand") ;
+	if(maxNumberOfAllowedCardsToAccept > 0 && attackingCards.length > 0){
+		disableTurn();
+		promptMessage("");		
+		var number = Math.min(maxNumberOfAllowedCardsToAccept, attackingCards.length);
+		//adding cards in loop
+		loop(number, loopFrequencyTime, function(){
+			var currentIndex = getValidCardsToAttack("pc-hand").length - 1
+			var cardNode = attackingCards[currentIndex]
+			addToCollect(cardNode, addingTime);
+		});
+		
+		//create a new accepting button after the adding loop		
+		setTimeout(function () { 
+		    promptMessage("I have additional cards for you, don't be shy, take them too.");  
+     		createButton( document.body , "accept the additional cards", "btn1", function(){
+				promptMessage("");
+				acceptCardsToMyHand(acceptTime);
+				disableTurn();
+		    })
+        }, (number+1)*loopFrequencyTime );
+		
+	}else{
+		promptMessage("");
+		acceptCardsToMyHand(acceptTime);
+		disableTurn();
+	}
+}
+
 
 var disableTurn = function(){
 	getArray("my-hand").forEach(function(elem){

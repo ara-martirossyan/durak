@@ -29,6 +29,15 @@ function makeMyHandSelectable(callback){
     });
 }
 
+
+function loop(number, frequancyTime, callback){
+	setTimeout(function () {   
+      callback();                        
+      if (--number) loop(number, frequancyTime, callback);      
+    }, frequancyTime)
+}
+
+
 //f.ex. context = document.body where to attache the button
 //btnTitle = "end attack"
 //btnStyle = "btn1" or "btn2"
