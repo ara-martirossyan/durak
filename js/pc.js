@@ -41,18 +41,9 @@ var addCardsForPcToCollect = function(checkNumber, time){
 			disableTurn();
 	})
 
-	getArray("my-hand").forEach(function(elem){
-		$(elem).mouseover(function(){
-			$(this).css({'top': popUp()+'em'});
-		});
-		$(elem).mouseout(function(){
-			$(this).css({'top': '0em'});
-		});
-		$(elem).click(function(){   
-		    var cardNode = $(this).get(0);
-            validateCardAndAddForCollection(checkNumber,cardNode,time);
-	    });
-	})
+	makeMyHandSelectable(function(cardNode){
+ 	   validateCardAndAddForCollection(checkNumber,cardNode,time);
+	});
 }
 
 var validateCardAndAddForCollection = function(checkNumber, cardNode, time){

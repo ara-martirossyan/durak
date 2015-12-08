@@ -14,7 +14,22 @@ var showPcHand = function(){
 	})
 }
 
-//f.ex. context = document.body
+function makeMyHandSelectable(callback){
+    getArray("my-hand").forEach(function(elem){
+        $(elem).mouseover(function(){
+            $(this).css({'top': popUp()+'em'});
+        });
+        $(elem).mouseout(function(){
+            $(this).css({'top': '0em'});
+        });
+        $(elem).click(function(){   
+            var cardNode = $(this).get(0);
+            callback(cardNode);
+        });
+    });
+}
+
+//f.ex. context = document.body where to attache the button
 //btnTitle = "end attack"
 //btnStyle = "btn1" or "btn2"
 //func = function determining the functionality of button when clicked

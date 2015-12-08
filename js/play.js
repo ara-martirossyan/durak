@@ -3,18 +3,10 @@
 //and when clicked move the card onto the table
 // and at last disable the selectable mode
 var myTurn = function(){
-	getArray("my-hand").forEach(function(elem){
-		$(elem).mouseover(function(){
-			$(this).css({'top': popUp()+'em'});
-		});
-		$(elem).mouseout(function(){
-			$(this).css({'top': '0em'});
-		});
-		$(elem).click(function(){   
-		    var cardNode = $(this).get(0);
-            play(cardNode,600);
-	    });
-	})
+	
+	makeMyHandSelectable(function(cardNode){
+ 	   play(cardNode, 600);
+	});
 
 	if( statusOfGame() === "attack" && grabCards("table").length !== 0 ){
 		createButton( document.body , "end attack", "btn1", function(){
