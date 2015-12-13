@@ -5,18 +5,17 @@
 var myTurn = function(){
 	
 	makeMyHandSelectable(function(cardNode){
- 	   play(cardNode, 600);
+ 	   play(cardNode, 600); //involves recursive call of pcTurn	   
 	});
+
 
 	if( statusOfGame() === "attack" && grabCards("table").length !== 0 ){
 		createButton( document.body , "end attack", "btn1", function(){
-			promptMessage("");
-			discard(1000);
-			disableTurn();
+			changeTurnAfterMyDiscard(1000); //involves recursive call of pcTurn-----------------------------
 		})
 	}else if( statusOfGame() === "defend"){
 		createButton( document.body , "accept cards", "btn1", function(){
-			myCollect(1000, 600, 590);
+			myCollect(1000, 600, 590);//involves recursive call of pcTurn-------------------
 		})
 	}	
 }
@@ -44,17 +43,46 @@ var myCollect = function(acceptTime, loopFrequencyTime, addingTime){
 		setTimeout(function () { 
 		    promptMessage("I have additional cards for you, don't be shy, take them too.");  
      		createButton( document.body , "accept the additional cards", "btn1", function(){
-				promptMessage("");
-				acceptCardsToMyHand(acceptTime);
-				disableTurn();
+				changeTurnAfterMyAccept(acceptTime);//+				
 		    })
         }, (number+1)*loopFrequencyTime );
 		
-	}else{
-		promptMessage("");
-		acceptCardsToMyHand(acceptTime);
-		disableTurn();
+	}else{		
+		changeTurnAfterMyAccept(acceptTime);//+
 	}
+
+	
+}
+
+/*
+* accepts cards to my-hand then deal hands and pc attack
+*/
+var changeTurnAfterMyAccept = function(acceptTime){ //+
+	promptMessage("");
+	acceptCardsToMyHand(acceptTime);
+	disableTurn();
+	setTimeout(function () {
+		dealHandsStartingFrom("pc-hand");
+		setTimeout(function(){
+			pcTurn(1000);
+		}, dealHandTime("pc-hand") + dealHandTime("my-hand") + 300)
+	}, acceptTime + 300)
+}
+
+/*
+* discards cards, deals hands and pc attack
+*/
+var changeTurnAfterMyDiscard = function(discardTime){//+
+	promptMessage("");
+    discard(discardTime);
+    disableTurn();
+	setTimeout(function () {
+		dealHandsStartingFrom("my-hand");
+		setTimeout(function(){
+			pcTurn(1000);
+		}, dealHandTime("pc-hand") + dealHandTime("my-hand") + 300)
+	}, discardTime + 300)
+
 }
 
 
@@ -127,12 +155,18 @@ var getValidCardsToDefend = function(handDivIdName){
 }
 
 
+/**
+* if my-hand attacks or defends, do the move when clicked on the right card
+* and change to pcTurn
+* if it is not clicked on the right card print the validation message
+**/
 var play = function(cardNode, time){
 	var status = statusOfGame();
 	if( (status === "attack" && isValidCardToAttack(cardNode)) ||  (status === "defend" && isValidCardToDefend(cardNode)) ){
 		promptMessage("");
 		playMove(cardNode,time);
 	    disableTurn();
+	    setTimeout(function(){pcTurn(1000)},time + 300)//+
 	}else if(status === "attack"){
 		promptMessage( "There are no " + rankWithWordsInPlural(cardNode) + " on the table, choose a valid card or finish the attack");
 	}else if(status === "defend"){

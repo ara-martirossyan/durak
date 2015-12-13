@@ -6,14 +6,20 @@ var pcTurn = function(time){
 		attackingCards = getValidCardsToAttack("pc-hand") ;
 		cardNode = attackingCards[ attackingCards.length - 1 ];
 		playMove(cardNode,time);
+		setTimeout(myTurn, time);
 	}else if(status === "defend" && getValidCardsToDefend("pc-hand").length !== 0){
 		defendingCards = getValidCardsToDefend("pc-hand") ;
 		cardNode = defendingCards[ defendingCards.length - 1 ];
 		playMove(cardNode,time);
+		setTimeout(myTurn, time);
 	}else if(status === "attack"){//no valid cards to attack
 		discard(time);
+		setTimeout(function(){
+			dealHandsStartingFrom("pc-hand");
+			setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand"))
+		}, time);
 	}else if(status === "defend"){//no valid cards to defend
-		pcCollect(time);
+		pcCollect(time); // involves myTurn recursive call
 	}
 }
 
@@ -23,11 +29,23 @@ var pcCollect = function(time){
 	var checkNumber = grabCards("table").length + maxNumberOfAllowedCardsToAccept ;
 	if(grabCards("table").length < checkNumber){
 		promptMessage( "I accept the cards. You can add additional cards" )
-		addCardsForPcToCollect(checkNumber, time);
+		addCardsForPcToCollect(checkNumber, time); // involves myTurn recursive call
 	}else{
-		promptMessage("");
-		acceptCardsToPcHand(time);
+		changeTurnAfterPcAccept(time); // involves myTurn recursive call
 	}
+}
+
+/*
+* accepts cards to pc-hand then deal hands and change to myTurn
+*/
+var changeTurnAfterPcAccept = function(time){ //+
+	promptMessage("");
+	disableTurn();
+	acceptCardsToPcHand(time);
+	setTimeout(function () {
+		dealHandsStartingFrom("my-hand");
+		setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand"));
+	}, time + 300)
 }
 
 // checkNumber is the max allowed # of cards on the table to be accepted 
@@ -36,11 +54,8 @@ var pcCollect = function(time){
 // defined at the time of declaration about collecting the cards
 var addCardsForPcToCollect = function(checkNumber, time){
 	createButton( document.body , "finish adding", "btn1", function(){
-			promptMessage("");
-			acceptCardsToPcHand(time);
-			disableTurn();
+		changeTurnAfterPcAccept(time);			
 	})
-
 	makeMyHandSelectable(function(cardNode){
  	   validateCardAndAddForCollection(checkNumber,cardNode,time);
 	});

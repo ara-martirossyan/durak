@@ -111,15 +111,4 @@ var highestCard = function(trumpSuit, cardNode1, cardNode2){
 	}
 }
 
-// returns length = 2 array [highestCard, lowestCard]
-var sortTwoCards = function(trumpSuit, cardNode1, cardNode2){
-	var high = highestCard(trumpSuit, cardNode1, cardNode2);
-	if(high.length === 2){
-		return high;
-	}else if(high === cardNode1){
-        return [cardNode1,cardNode2];
-	}else if(high === cardNode2){
-		return [cardNode2,cardNode1];
-	}
-}
 
