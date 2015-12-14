@@ -21,3 +21,13 @@ var isGameOver = function(){
   	return false;
   }
 }
+
+var startGame = function(){
+	$("#message").empty();
+	firstDealOfBothHands(12);
+	setTimeout(function(){
+		//flip, rotate, sort
+		createTrumpCard(1000,1000,600);
+		setTimeout(firstTurn,3000)
+	}, 1500);//13000!
+}

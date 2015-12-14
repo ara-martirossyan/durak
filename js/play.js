@@ -6,22 +6,20 @@ var myTurn = function(){
 	if(isGameOver()){
 
 	}else{ 
+	    makeMyHandSelectable(function(cardNode){
+ 	   		play(cardNode, 600); //involves recursive call of pcTurn	   
+ 	    });
 
-	makeMyHandSelectable(function(cardNode){
- 	   play(cardNode, 600); //involves recursive call of pcTurn	   
-	});
 
-
-	if( statusOfGame() === "attack" && grabCards("table").length !== 0 ){
-		createButton( document.body , "end attack", "btn1", function(){
-			changeTurnAfterMyDiscard(1000); //involves recursive call of pcTurn
-		})
-	}else if( statusOfGame() === "defend"){
-		createButton( document.body , "accept cards", "btn1", function(){
-			myCollect(1000, 600, 590);//involves recursive call of pcTurn
-		})
-	}
-
+		if( statusOfGame() === "attack" && grabCards("table").length !== 0 ){
+			createButton( document.body , "end attack", "btn1", function(){
+				changeTurnAfterMyDiscard(1000); //involves recursive call of pcTurn
+			})
+		}else if( statusOfGame() === "defend"){
+			createButton( document.body , "accept cards", "btn1", function(){
+				myCollect(1000, 600, 590);//involves recursive call of pcTurn
+			})
+		}
 	}	
 }
 

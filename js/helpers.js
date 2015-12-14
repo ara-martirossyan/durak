@@ -14,6 +14,12 @@ var showPcHand = function(){
 	})
 }
 
+//return trump suit name like "spades"
+var trump = function(){
+	var suitChar = $("#trump").html();
+	return suitCharToString(suitChar)
+}
+
 function makeMyHandSelectable(callback){
     getArray("my-hand").forEach(function(elem){
         $(elem).mouseover(function(){
@@ -44,7 +50,9 @@ function loop(number, frequancyTime, callback){
 //func = function determining the functionality of button when clicked
 function createButton(context,btnTitle,btnStyle, func){
     var button = document.createElement("button");
+    button.className = "myButton"
     button.id = btnStyle;
+
     button.onclick = func;
     button.innerHTML = btnTitle;
     context.appendChild(button)

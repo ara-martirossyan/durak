@@ -268,13 +268,6 @@ function firstDealOfBothHands(numberOfCards) {
    });// mi hat el 0 avelacra sarqi 1000!
 };
 
-//return trump suit name like "spades"
-var trump = function(){
-	var suitChar = $("#trump").html();
-	return suitCharToString(suitChar)
-}
-
-
 var sortMyHand =  function(time){
 	prepare(0, "deck", "my-hand", trump(), time);
 }
@@ -368,12 +361,25 @@ var firstTurn = function(){
 		promptMessage("Parzvum a voch mek kozr chuni");
 	}else if( my === null ){
 		showLowestTrumpCard(pc, 3000);
+
+		setTimeout(function(){
+			pcTurn(1000);
+		},4000);
+		
 	}else if( pc === null ){
 		keepMessage("You have the lowest trump card. You attack!", 2000);
+		setTimeout(myTurn,2100);
 	}else if( highestCard(trumpSuit,pc,my) === my ){
 		showLowestTrumpCard(pc, 3000);
+
+		setTimeout(function(){
+			pcTurn(1000);
+		},4000);
+
 	}else if( highestCard(trumpSuit,pc,my) === pc ){
 		keepMessage("You have the lowest trump card. You attack!", 2000);
+
+		setTimeout(myTurn,2100);
 	}
 }
 
@@ -396,7 +402,7 @@ var startGame = function(){
 		//flip, rotate, sort
 		createTrumpCard(1000,1000,600);
 		setTimeout(firstTurn,3000)
-		setTimeout(myTurn,8000)
+		//setTimeout(myTurn,8000)
 	}, 1500);//13000!
 }
 
