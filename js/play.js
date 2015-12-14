@@ -3,7 +3,10 @@
 //and when clicked move the card onto the table
 // and at last disable the selectable mode
 var myTurn = function(){
-	
+	if(isGameOver()){
+
+	}else{ 
+
 	makeMyHandSelectable(function(cardNode){
  	   play(cardNode, 600); //involves recursive call of pcTurn	   
 	});
@@ -11,12 +14,14 @@ var myTurn = function(){
 
 	if( statusOfGame() === "attack" && grabCards("table").length !== 0 ){
 		createButton( document.body , "end attack", "btn1", function(){
-			changeTurnAfterMyDiscard(1000); //involves recursive call of pcTurn-----------------------------
+			changeTurnAfterMyDiscard(1000); //involves recursive call of pcTurn
 		})
 	}else if( statusOfGame() === "defend"){
 		createButton( document.body , "accept cards", "btn1", function(){
-			myCollect(1000, 600, 590);//involves recursive call of pcTurn-------------------
+			myCollect(1000, 600, 590);//involves recursive call of pcTurn
 		})
+	}
+
 	}	
 }
 
@@ -95,6 +100,10 @@ var disableTurn = function(){
 	$("#btn2").remove();
 }
 
+/*
+* returns "attack" or "defend"
+* depending on the odd or even cards on the table
+*/
 var statusOfGame = function(){
 	var status = "attack";
 	if( grabCards("table").length % 2 ){
@@ -166,7 +175,11 @@ var play = function(cardNode, time){
 		promptMessage("");
 		playMove(cardNode,time);
 	    disableTurn();
-	    setTimeout(function(){pcTurn(1000)},time + 300)//+
+	    
+		
+		setTimeout(function(){pcTurn(1000)},time + 300)//+
+	    
+
 	}else if(status === "attack"){
 		promptMessage( "There are no " + rankWithWordsInPlural(cardNode) + " on the table, choose a valid card or finish the attack");
 	}else if(status === "defend"){

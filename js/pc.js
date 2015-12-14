@@ -1,23 +1,33 @@
 
 var pcTurn = function(time){
 	var status = statusOfGame();
-	var attackingCards, defendingCards, cardNode;	
-	if(status === "attack" && getValidCardsToAttack("pc-hand").length !== 0){
+	var attackingCards, defendingCards, cardNode;
+	if(isGameOver()){
+
+	}else if(status === "attack" && getValidCardsToAttack("pc-hand").length !== 0){
 		attackingCards = getValidCardsToAttack("pc-hand") ;
 		cardNode = attackingCards[ attackingCards.length - 1 ];
 		playMove(cardNode,time);
-		setTimeout(myTurn, time);
+
+		
+		setTimeout(myTurn, time + 200);
+		
+
 	}else if(status === "defend" && getValidCardsToDefend("pc-hand").length !== 0){
 		defendingCards = getValidCardsToDefend("pc-hand") ;
 		cardNode = defendingCards[ defendingCards.length - 1 ];
 		playMove(cardNode,time);
-		setTimeout(myTurn, time);
+
+		
+		setTimeout(myTurn, time + 200);
+		
+		
 	}else if(status === "attack"){//no valid cards to attack
 		discard(time);
 		setTimeout(function(){
 			dealHandsStartingFrom("pc-hand");
-			setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand"))
-		}, time);
+			setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand") + 200)
+		}, time );
 	}else if(status === "defend"){//no valid cards to defend
 		pcCollect(time); // involves myTurn recursive call
 	}
@@ -44,7 +54,7 @@ var changeTurnAfterPcAccept = function(time){ //+
 	acceptCardsToPcHand(time);
 	setTimeout(function () {
 		dealHandsStartingFrom("my-hand");
-		setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand"));
+		setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand") + 200);
 	}, time + 300)
 }
 

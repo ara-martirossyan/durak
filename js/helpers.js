@@ -7,7 +7,7 @@ var getArray = function(divIdName){
 	return castToArray( grabCards(divIdName) )
 }
 
-
+//not used in the game... created for development
 var showPcHand = function(){
 	return [].map.call( grabCards("pc-hand"), function(e){
 		return card(e)
