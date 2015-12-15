@@ -84,17 +84,19 @@ var dealHand = function(divHandIDName){
 }
 
 var dealHandsStartingFrom = function(divHandIDName){
-  var time = dealHandTime(divHandIDName);
-  var nextHand;
-  if(divHandIDName === "pc-hand"){
-  	nextHand = "my-hand"
-  }else{
-  	nextHand = "pc-hand"
-  }
-  dealHand(divHandIDName);
-  setTimeout(function(){
-  	dealHand(nextHand);
-  },time)
+	if(grabCards("deck").length !== 0){
+  		var time = dealHandTime(divHandIDName);
+ 	    var nextHand;
+  		if(divHandIDName === "pc-hand"){
+  			nextHand = "my-hand"
+ 	    }else{
+  			nextHand = "pc-hand"
+ 		}
+  		dealHand(divHandIDName);
+  		setTimeout(function(){
+  			dealHand(nextHand);
+  		},time)
+	}
 }
 
 
@@ -137,34 +139,35 @@ function moveCards (numberOfCards, handDivIdName,  prepared) {
 
 
 
-//time
+//time = 900
 var moveFromDeckTo = function(handDivIdName,  prepared){
 	var deckTopCard = topCardOfStack("deck");
-	//take care of the bottom trump card
-	if(grabCards("deck").length === 1){
-		grabCards("deck").unwrap().appendTo("#deck").css({left: "0em", top: "0em" }).dequeue();
-	}
+	if( deckTopCard !== null){
+		//take care of the bottom trump card
+		if(grabCards("deck").length === 1){
+			grabCards("deck").unwrap().appendTo("#deck").css({left: "0em", top: "0em" }).dequeue();
+		}
 
-	// off is the relative distance of the top card in the deck from deck div in em's
-	var off = Number( deckTopCard.style.left.replace(/[^0-9,.,-]/g, '') );
-	// deckTop and deckLeft are the relative distances of the deck from handDivIdName in em's
-	var deckTop = (handDivIdName === "pc-hand"? deckTopFromPcHand() : deckTopFromMyHand())
-	var deckLeft = (handDivIdName === "pc-hand"? deckLeftFromPcHand() : deckLeftFromMyHand())
-    var scale = handScale(prepared);
-    var idx = prepared.indexOf(deckTopCard);
-	var card = insert(deckTopCard, prepared, "deck", handDivIdName)
-	.css({top: deckTop + off + 'em', left: deckLeft + off + 'em'})	
+		// off is the relative distance of the top card in the deck from deck div in em's
+		var off = Number( deckTopCard.style.left.replace(/[^0-9,.,-]/g, '') );
+		// deckTop and deckLeft are the relative distances of the deck from handDivIdName in em's
+		var deckTop = (handDivIdName === "pc-hand"? deckTopFromPcHand() : deckTopFromMyHand())
+		var deckLeft = (handDivIdName === "pc-hand"? deckLeftFromPcHand() : deckLeftFromMyHand())
+   		var scale = handScale(prepared);
+	    var idx = prepared.indexOf(deckTopCard);
+		var card = insert(deckTopCard, prepared, "deck", handDivIdName)
+		.css({top: deckTop + off + 'em', left: deckLeft + off + 'em'})	
 
-	if(grabCards("deck").length === 0 && handDivIdName === "pc-hand"){
-		moveByFlip(card, idx*scale, 0, 900, false)
-	}else if(grabCards("deck").length === 0 && handDivIdName === "my-hand"){
-		card.animate({left: idx*scale+"em", top: 0+"em"},900,"swing")
-	}else if( handDivIdName === "my-hand" ){
-		moveByFlip(card, idx*scale, 0, 900, true)
-	}else if( handDivIdName === "pc-hand" ){
-		card.animate({left: idx*scale+"em", top: 0+"em"},900,"swing")
+		if(grabCards("deck").length === 0 && handDivIdName === "pc-hand"){
+			moveByFlip(card, idx*scale, 0, 900, false)
+		}else if(grabCards("deck").length === 0 && handDivIdName === "my-hand"){
+			card.animate({left: idx*scale+"em", top: 0+"em"},900,"swing")
+		}else if( handDivIdName === "my-hand" ){
+			moveByFlip(card, idx*scale, 0, 900, true)
+		}else if( handDivIdName === "pc-hand" ){
+			card.animate({left: idx*scale+"em", top: 0+"em"},900,"swing")
+		}
 	}
-	
 }
 
 var insert = function(cardNode, prepared, srcDivIdName, handDivIdName){
@@ -216,8 +219,7 @@ var prepare = function(number,sourceDivIdName,targetDivIdName,trumpSuit,time){
 }
 
 
-// verjum anpayman kjnjes ay tgha
-// test functionality on interface 
+// test functionality on interface used in dev. mode
 var toBeDeletedUselessFunction = function(handInputId){
 	var num = document.getElementById(handInputId).value
 	var suit = $('input[type=radio]:checked').val();
@@ -229,8 +231,12 @@ var toBeDeletedUselessFunction = function(handInputId){
 ////////////////////////////////////////////////////////////////////////////
 //                            START GAME                                  //
 ////////////////////////////////////////////////////////////////////////////
-//time = 900
-var initDealMove = function(){
+/*
+* deals one card to pc-hand OR one card to my-hand
+* depending on the top card of the deck 
+* at initDealMove.argument time
+*/
+var initDealMove = function(time){
 
 	//var cardsArr = castToArray( grabCards("deck").slice(36-12) );
 	var cardsArr = getArray("deck").slice(36-12) ;
@@ -253,19 +259,17 @@ var initDealMove = function(){
 
 	if(handDivIdName === "my-hand"){
 		var idx = my.indexOf(topCard)
-		moveByFlip(topCard, idx*cardWidth(), 0, 100, true)//900!
+		moveByFlip(topCard, idx*cardWidth(), 0, time, true)
 	}else if(handDivIdName === "pc-hand"){
 		var idx = pc.indexOf(topCard)
-		card.animate({left: idx*cardWidth()+"em", top: 0+"em"},100,"swing")//900!
+		card.animate({left: idx*cardWidth()+"em", top: 0+"em"}, time,"swing")
 	}
 }
 
-
-//time
-function firstDealOfBothHands(numberOfCards) {          
-   loop(numberOfCards,100, function(){
-   	  initDealMove();
-   });// mi hat el 0 avelacra sarqi 1000!
+function firstDealOfBothHands(numberOfCards, loopTime, singleMoveTime) {          
+   loop(numberOfCards, loopTime, function(){
+   	  initDealMove( singleMoveTime ); 
+   });
 };
 
 var sortMyHand =  function(time){
@@ -289,7 +293,6 @@ var createTrumpDiv = function(){
 	$(trumpDiv).appendTo("body")	
 }
 
-//rotTime = 1000 sortTime = 600
 var insertTopCardIntoBottomOfDeckByRotatingAndThenSortMyHand = function(rotTime, sortTime){
 	bottomCard = document.createElement("DIV");
 	bottomCard.id = "bottom";
@@ -339,7 +342,7 @@ var keepMessage = function(messageString, time){
 		$("#message").empty();
 	}, time)
 }
-//time
+
 var showLowestTrumpCard = function(cardNode, showTime){
 	promptMessage("I have the lowest trump card");
 	//show card
@@ -351,41 +354,51 @@ var showLowestTrumpCard = function(cardNode, showTime){
 	},showTime);
 }
 
-
-
+/*
+* determines who starts attacking first
+* if the first turn belongs to pc
+* shows the lowest trump card and then 
+* does its first attacking move
+* (the timing appearing in the function
+*  is irrelevant for other parts of the project!)
+*/
 var firstTurn = function(){
 	var trumpSuit = trump();
 	var my = lowestTrumpCard("my-hand");
 	var pc = lowestTrumpCard("pc-hand");
 	if(my === null && pc === null){
-		promptMessage("Parzvum a voch mek kozr chuni");
+		promptMessage("Nobody has a trump card, press New Game to start again.");
 	}else if( my === null ){
-		showLowestTrumpCard(pc, 3000);
 
+		showLowestTrumpCard(pc, 3000);
 		setTimeout(function(){
 			pcTurn(1000);
 		},4000);
 		
 	}else if( pc === null ){
+
 		keepMessage("You have the lowest trump card. You attack!", 2000);
 		setTimeout(myTurn,2100);
-	}else if( highestCard(trumpSuit,pc,my) === my ){
-		showLowestTrumpCard(pc, 3000);
 
+	}else if( highestCard(trumpSuit,pc,my) === my ){
+
+		showLowestTrumpCard(pc, 3000);
 		setTimeout(function(){
 			pcTurn(1000);
 		},4000);
 
 	}else if( highestCard(trumpSuit,pc,my) === pc ){
-		keepMessage("You have the lowest trump card. You attack!", 2000);
 
+		keepMessage("You have the lowest trump card. You attack!", 2000);
 		setTimeout(myTurn,2100);
 	}
 }
 
-//flips the top card (trump) of the deck to its side
-//rotates 90 degree to the bottom of the deck
-//and then sorts my hand w.r.t bottom trump card 
+/*
+* flips the top card (trump) of the deck to its side
+* rotates 90 degree to the bottom of the deck
+* and then sorts my hand w.r.t bottom trump card 
+*/
 var createTrumpCard = function(flipTime, rotTime, sortTime){
 	moveByFlip(topCardOfStack("deck"), 6, -1, flipTime, true)
 	.queue(function(){
@@ -395,16 +408,7 @@ var createTrumpCard = function(flipTime, rotTime, sortTime){
 
 
 
-var startGame = function(){
-	$("#message").empty();
-	firstDealOfBothHands(12);
-	setTimeout(function(){
-		//flip, rotate, sort
-		createTrumpCard(1000,1000,600);
-		setTimeout(firstTurn,3000)
-		//setTimeout(myTurn,8000)
-	}, 1500);//13000!
-}
+
 
 
 

@@ -234,9 +234,4 @@ function putCardAt(divIDName, x, y, faceUpOrDown){
   return cardNode
 }
 
-// this is stupid function and must be deleted in the end
-var createCard = function(){
-    var c = new Card("10", "spades");
-    c.put("table",0,0,"up");
-}
 

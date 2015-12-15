@@ -4,7 +4,7 @@
 // and at last disable the selectable mode
 var myTurn = function(){
 	if(isGameOver()){
-
+		showPcCards(600);
 	}else{ 
 	    makeMyHandSelectable(function(cardNode){
  	   		play(cardNode, 600); //involves recursive call of pcTurn	   
@@ -46,12 +46,12 @@ var myCollect = function(acceptTime, loopFrequencyTime, addingTime){
 		setTimeout(function () { 
 		    promptMessage("I have additional cards for you, don't be shy, take them too.");  
      		createButton( document.body , "accept the additional cards", "btn1", function(){
-				changeTurnAfterMyAccept(acceptTime);//+				
+				changeTurnAfterMyAccept(acceptTime);//involves recursive call of pcTurn				
 		    })
         }, (number+1)*loopFrequencyTime );
 		
 	}else{		
-		changeTurnAfterMyAccept(acceptTime);//+
+		changeTurnAfterMyAccept(acceptTime);//involves recursive call of pcTurn
 	}
 
 	
@@ -59,8 +59,9 @@ var myCollect = function(acceptTime, loopFrequencyTime, addingTime){
 
 /*
 * accepts cards to my-hand then deal hands and pc attack
+* involves recursive call of pcTurn
 */
-var changeTurnAfterMyAccept = function(acceptTime){ //+
+var changeTurnAfterMyAccept = function(acceptTime){ 
 	promptMessage("");
 	acceptCardsToMyHand(acceptTime);
 	disableTurn();
@@ -74,8 +75,9 @@ var changeTurnAfterMyAccept = function(acceptTime){ //+
 
 /*
 * discards cards, deals hands and pc attack
+* involves recursive call of pcTurn
 */
-var changeTurnAfterMyDiscard = function(discardTime){//+
+var changeTurnAfterMyDiscard = function(discardTime){
 	promptMessage("");
     discard(discardTime);
     disableTurn();
@@ -175,7 +177,7 @@ var play = function(cardNode, time){
 	    disableTurn();
 	    
 		
-		setTimeout(function(){pcTurn(1000)},time + 300)//+
+		setTimeout(function(){pcTurn(1000)},time + 300)
 	    
 
 	}else if(status === "attack"){

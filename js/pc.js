@@ -3,7 +3,7 @@ var pcTurn = function(time){
 	var status = statusOfGame();
 	var attackingCards, defendingCards, cardNode;
 	if(isGameOver()){
-
+		showPcCards(600);
 	}else if(status === "attack" && getValidCardsToAttack("pc-hand").length !== 0){
 		attackingCards = getValidCardsToAttack("pc-hand") ;
 		cardNode = attackingCards[ attackingCards.length - 1 ];

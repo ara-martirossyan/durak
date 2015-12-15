@@ -8,9 +8,17 @@
 </head>
 <body>
 
-   <button href="#" class="myButton" onclick="deckInit();">create 36-card deck</button>
-   <button href="#" class="myButton" onclick='shuffleDeck();'>shuffle deck</button>
-   <button href="#" class="myButton" onclick='startGame();'>Start Game</button>
+   <a href="http://aralmighty.com/" class="myButton">Back Home</a>
+   <a href="#" class="myButton" 
+   onclick=
+   '
+     $(this).remove();
+     createButton( document.body, "New Game","", function(){
+        location.reload();
+     })
+     startGame(700, 1000, 1000, 600);
+   '
+   >Start Game</a>
    
 
    <!-- development environment (remove the html brackets to turn on the dev. env. mode)
@@ -45,7 +53,7 @@
 
    -->
 
-   <h1 id = "message">Press create deck, shuffle, and start the game!</h1>
+   <h1  id = "message"></h1>
    <div id = "table"></div>
    <div id = "deck"></div>
    <div id = "pc-hand"></div>

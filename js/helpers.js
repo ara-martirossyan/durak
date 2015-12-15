@@ -1,20 +1,42 @@
-//casts a jquery Object collection to an array
+/*
+* casts a jquery Object collection to an array
+*/
 var castToArray = function(obj){
 	return [].map.call(obj, function(e){return e})
 }
 
+/*
+* get the array of id = divIdName div cards 
+*/
 var getArray = function(divIdName){
 	return castToArray( grabCards(divIdName) )
 }
 
-//not used in the game... created for development
-var showPcHand = function(){
+/*
+* not used in the game... created for development
+*/
+var showPcHandInConsole = function(){
 	return [].map.call( grabCards("pc-hand"), function(e){
 		return card(e)
 	})
 }
 
-//return trump suit name like "spades"
+/*
+* shows pc-hand cards when the game is over
+*/
+var showPcCards = function(time){
+	var pcHand = getArray("pc-hand");
+	if(pcHand.length !== 0){
+		pcHand.forEach(function(elem){
+			var x = Number( elem.style.left.replace(/[^0-9,.,-]/g, '') );
+			moveByFlip(elem, x, 0, time, true)
+		})
+    }
+}
+
+/*
+* return trump suit name like "spades"
+*/
 var trump = function(){
 	var suitChar = $("#trump").html();
 	return suitCharToString(suitChar)
@@ -43,20 +65,21 @@ function loop(number, frequancyTime, callback){
     }, frequancyTime)
 }
 
-
-//f.ex. context = document.body where to attache the button
-//btnTitle = "end attack"
-//btnStyle = "btn1" or "btn2"
-//func = function determining the functionality of button when clicked
-function createButton(context,btnTitle,btnStyle, func){
+/*
+* f.ex. context = document.body where to attache the button
+* btnTitle = "end attack"
+* btnStyleID = "btn1" or "btn2"
+* func = function determining the functionality of button when clicked
+*/
+function createButton(context,btnTitle,btnStyleID, func){
     var button = document.createElement("button");
     button.className = "myButton"
-    button.id = btnStyle;
-
+    button.id = btnStyleID;
     button.onclick = func;
     button.innerHTML = btnTitle;
     context.appendChild(button)
 }
+
 
 //1000 is the time of card move. 600 is the sorting time and 100 extra time
 var dealHandTime = function(divHandIDName){
@@ -84,9 +107,11 @@ var isCardArraySorted = function(trumpSuit, arr){
 	})
 }
 
-// returns sorted array so that the highest card is on the left
-// and the lowest card is on the right
-// if array is sorted already it returns the array without sorting it
+/*
+* returns sorted array so that the highest card is on the left
+* and the lowest card is on the right
+* if array is sorted already it returns the array without sorting it
+*/
 var sortCardArray = function(trumpSuit, arr){
 	if( isCardArraySorted(trumpSuit, arr) ){return arr;}
 
@@ -107,8 +132,10 @@ var sortCardArray = function(trumpSuit, arr){
 	return left.concat([pivot],right);
 }
 
-//reorders cardNodes in the parent <div id = "cardsDivIdName"></div>
-//so that the highest cardNodes come first in the mentioned div stack
+/*
+* reorders cardNodes in the parent <div id = "cardsDivIdName"></div>
+* so that the highest cardNodes come first in the mentioned div stack
+*/
 var sortCardNodesOrder = function(trumpSuit, cardsDivIdName){
 		//convert grabbed cards to usual javascript array []
 	    var arr = getArray(cardsDivIdName);
@@ -122,15 +149,9 @@ var sortCardNodesOrder = function(trumpSuit, cardsDivIdName){
         };
 }
 
-
-
-var pcAttackLowestCard = function(time){
-	var arr = getArray("pc-hand");
-	var hand = sortCardArray(trump(), arr);
-	var cardNode = hand[hand.length - 1];
-    playMove(cardNode, time);
-}
-
+/*
+* used only in dev. mode to add a card on the table
+*/
 var pcAddLowestCard = function(time){
 	var arr = getArray("pc-hand");
 	var hand = sortCardArray(trump(), arr);
