@@ -27,7 +27,7 @@ var isGameOver = function(){
   var myHand = grabCards("my-hand").length;
   var pcHand = grabCards("pc-hand").length;
   if( deck === 0 && pcHand === 0 && myHand > 1 ){
-    promptMessage("You lost!");
+    promptMessage("Hey Durak, you have lost, wise up now and pay the cost!");
     return true;
   }else if( deck === 0 && myHand === 0 && pcHand > 1 ){
     promptMessage("You won!");
@@ -39,7 +39,7 @@ var isGameOver = function(){
     promptMessage("You won!");
     return true;
   }else if( deck === 0 && myHand === 1 && pcHand === 0 && !isValidCardToDefend(grabCards("my-hand")[0])){
-    promptMessage("You lost!");
+    promptMessage("Hey Durak, you have lost, wise up now and pay the cost!");
     return true;
   }else{
     return false;
