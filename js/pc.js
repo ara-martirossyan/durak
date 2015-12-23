@@ -4,6 +4,8 @@ var pcTurn = function(time){
 	var attackingCards, defendingCards, cardNode;
 	if(isGameOver()){
 		showPcCards(600);
+	}else if( status === "attack" && grabCards("my-hand").length === 0 ){
+		changeTurnAfterPcDiscard(time);
 	}else if(status === "attack" && getValidCardsToAttack("pc-hand").length !== 0){
 		attackingCards = getValidCardsToAttack("pc-hand") ;
 		cardNode = attackingCards[ attackingCards.length - 1 ];
@@ -23,17 +25,27 @@ var pcTurn = function(time){
 		
 		
 	}else if(status === "attack"){//no valid cards to attack
-		discard(time);
-		setTimeout(function(){
-			dealHandsStartingFrom("pc-hand");
-			setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand") + 200)
-		}, time );
+		changeTurnAfterPcDiscard(time);
 	}else if(status === "defend"){//no valid cards to defend
 		pcCollect(time); // involves myTurn recursive call
 	}
 }
 
+/*
+* discards cards, deals hands and my attack
+* involves recursive call of myTurn
+*/
+var changeTurnAfterPcDiscard = function(discardTime){
+	discard(discardTime);
+	setTimeout(function(){
+		dealHandsStartingFrom("pc-hand");
+		setTimeout(myTurn, dealHandTime("pc-hand") + dealHandTime("my-hand") + 200)
+	}, discardTime );
+}
 
+/*
+* involves myTurn recursive call
+*/
 var pcCollect = function(time){
 	var maxNumberOfAllowedCardsToAccept = grabCards("pc-hand").length - 1;
 	var checkNumber = grabCards("table").length + maxNumberOfAllowedCardsToAccept ;

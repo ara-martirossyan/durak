@@ -5,6 +5,8 @@
 var myTurn = function(){
 	if(isGameOver()){
 		showPcCards(600);
+	}else if( statusOfGame() === "attack" && grabCards("pc-hand").length === 0){//no cards left in pc hand
+		changeTurnAfterMyDiscard(1000); //involves recursive call of pcTurn
 	}else{ 
 	    makeMyHandSelectable(function(cardNode){
  	   		play(cardNode, 600); //involves recursive call of pcTurn	   
