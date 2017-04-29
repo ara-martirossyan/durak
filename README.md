@@ -1,5 +1,5 @@
 # Durak
-=============
+
 Durak is a card game to play with the computer. It is played with a deck of 36 cards. The deck is shuffled, and each player receives six cards. The top card on the remaining deck is made visible and placed at the bottom of the deck at a 90 degree angle. This determines the trump suit.     
         
 The first player to attack is the one who holds the lowest trump suit in his hand. The attacker throws any card he wishes from his hand and the defender must beat this card. A card can be beaten by a higher card of the same suit or any card of the trump suit, unless the card is itself from the trump suit. In the latter case it can only be beaten by a higher trump. 
