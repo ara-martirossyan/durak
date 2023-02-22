@@ -12,7 +12,7 @@ If the defender cannot or does not want to beat the card of the attacker he must
   
  Demo
 --------------
-To play online visit please the following [webpage](http://aralmighty.com/durak/index.html).
+To play online visit please the following [webpage](https://martirosyan.fr/durak).
   
  Download
 --------------
